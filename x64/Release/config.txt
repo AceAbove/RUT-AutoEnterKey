@@ -1,0 +1,2 @@
+YourRutLocation=C:\Users\Username\Downloads\
+YourKey=your key
