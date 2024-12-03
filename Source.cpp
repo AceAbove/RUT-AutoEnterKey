@@ -61,21 +61,11 @@ void SendTextToConsoleWindow(const std::string& rutLocation, const std::string& 
     SetForegroundWindow(consoleWindow);
     while (FindWindowA(NULL, rutLocation.c_str()) != NULL) {
         for (char c : key) {
-            INPUT input = { 0 };
-            input.type = INPUT_KEYBOARD;
-            input.ki.wVk = 0;
-            input.ki.wScan = c;
-            input.ki.dwFlags = KEYEVENTF_UNICODE;
-            SendInput(1, &input, sizeof(INPUT));
+            PostMessage(consoleWindow, WM_CHAR, c, 0);
             std::this_thread::sleep_for(std::chrono::milliseconds(10)); 
         }
-       
-        INPUT input = { 0 };
-        input.type = INPUT_KEYBOARD;
-        input.ki.wVk = VK_RETURN;
-        SendInput(1, &input, sizeof(INPUT));
-        input.ki.dwFlags = KEYEVENTF_KEYUP;
-        SendInput(1, &input, sizeof(INPUT));
+        PostMessage(consoleWindow, WM_KEYDOWN, VK_RETURN, 0);
+        PostMessage(consoleWindow, WM_KEYUP, VK_RETURN, 0);
         
         std::this_thread::sleep_for(std::chrono::seconds(1));
         std::cout << "Entering key...\n";
@@ -97,6 +87,7 @@ void PeriodicallySearchAndSendText(const std::string& rutLocation, const std::st
         std::this_thread::sleep_for(std::chrono::seconds(1));
     }
 }
+
 int main() {
     std::string rutLocation;
     std::string key;
@@ -111,7 +102,6 @@ int main() {
 
     PeriodicallySearchAndSendText(rutLocation, key);
 
-    
     std::cout << "Target window closed. Exiting program..." << std::endl;
     return 0;
 }
